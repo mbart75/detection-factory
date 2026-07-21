@@ -1,0 +1,50 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned tooling
+        run: pip install -r requirements.txt
+
+      - name: "Stage 1 - Sigma schema and lint"
+        run: sigma check -i -c config/sigma_validation.yml rules/
+
+      - name: "Stage 2 - Convert to Sentinel KQL"
+        run: python3 scripts/convert_rules.py
+
+      - name: Cache EVTX samples
+        uses: actions/cache@v4
+        with:
+          path: tests/samples
+          key: evtx-samples-4ceed2f4706daf601c212a8f91c113dd85349a2c
+      - name: "Stage 3a - Install pinned Zircolite"
+        run: bash scripts/setup_zircolite.sh
+      - name: "Stage 3b - Fetch pinned EVTX samples"
+        run: python3 tests/runner/fetch_samples.py
+      - name: "Stage 3c - Detection tests (every rule must fire)"
+        run: python3 tests/runner/run_tests.py
+
+      - name: "Stage 4a - Bandit (SAST on tooling)"
+        run: bandit -q -r scripts/ tests/runner/ -c .bandit
+      - name: "Stage 4b - pip-audit (dependency vulnerabilities)"
+        # PYSEC-2026-2447: diskcache is a transitive dep of pinned pySigma with no
+        # patched release; used only as a local build-time ATT&CK-data cache.
+        run: pip-audit -r requirements.txt --ignore-vuln PYSEC-2026-2447
+
+      - name: Build ATT&CK coverage layer
+        run: python3 scripts/build_layer.py
+
+      - name: Upload KQL artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinel-kql
+          path: dist/kql/

@@ -29,9 +29,14 @@ def main() -> int:
             commit=upstream["commit"],
             path=urllib.parse.quote(sample),
         )
+        if not url.startswith("https://"):
+            print(f"[error] refusing non-https URL: {url}", file=sys.stderr)
+            failures += 1
+            continue
         try:
             print(f"[fetch] {sample}")
-            with urllib.request.urlopen(url, timeout=60) as resp:
+            # https enforced above; host/commit constant -> file:/ scheme abuse N/A
+            with urllib.request.urlopen(url, timeout=60) as resp:  # nosec B310
                 dest.write_bytes(resp.read())
         except OSError as exc:
             print(f"[error] {sample}: {exc}", file=sys.stderr)

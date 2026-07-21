@@ -28,7 +28,7 @@ def main() -> int:
     for entry in manifest["tests"]:
         rule = ROOT / entry["rule"]
         out = DIST / (rule.stem + ".kql")
-        proc = subprocess.run(
+        proc = subprocess.run(  # nosec B603: fixed argv, no shell, trusted inputs
             [str(SIGMA), "convert", "-t", "kusto", *pipelines_for(entry), str(rule)],
             capture_output=True, text=True,
         )

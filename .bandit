@@ -1,0 +1,4 @@
+# B404 flags the mere import of subprocess; actual call safety is covered by
+# B602/B603 (we use list-form argv, no shell). Skip the import-level noise only.
+skips:
+  - B404

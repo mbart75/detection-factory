@@ -28,7 +28,7 @@ def run_zircolite(rule: Path, sample: Path) -> list:
             "--pipeline", *PIPELINES,
             "--outfile", str(outfile),
         ]
-        proc = subprocess.run(
+        proc = subprocess.run(  # nosec B603: fixed argv, no shell, trusted inputs
             cmd, capture_output=True, text=True, cwd=ZIRCOLITE.parent
         )
         if not outfile.exists():
