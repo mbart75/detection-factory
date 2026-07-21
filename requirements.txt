@@ -1,0 +1,5 @@
+sigma-cli==3.1.0
+pySigma-backend-kusto==1.0.1
+PyYAML==6.0.3
+bandit==1.9.4
+pip-audit==2.10.1
