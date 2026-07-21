@@ -1,7 +1,7 @@
-title: Scheduled Task Created With Suspicious Payload
+title: Scheduled Task Created Via Schtasks With Suspicious Payload
 id: 6856549b-b7fb-407f-8291-a8a7ff8e23de
 status: experimental
-description: Detects creation of a scheduled task (Security 4698) whose task content points to user-writable paths or script interpreters, a common persistence primitive.
+description: Detects schtasks.exe creating a task whose command line references user-writable paths or script interpreters, a common persistence primitive.
 references:
     - https://attack.mitre.org/techniques/T1053/005/
 author: Maxence Barthelemy
@@ -11,19 +11,21 @@ tags:
     - attack.execution
     - attack.t1053.005
 logsource:
+    category: process_creation
     product: windows
-    service: security
 detection:
     selection:
-        EventID: 4698
-    susp_content:
-        TaskContent|contains:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains: '/create'
+    susp_payload:
+        CommandLine|contains:
             - '\AppData\'
             - '\Temp\'
             - 'powershell'
             - 'cmd.exe'
             - 'rundll32'
-    condition: selection and susp_content
+            - '.tmp'
+    condition: selection and susp_payload
 falsepositives:
     - Legitimate software installers registering update tasks from user paths
 level: medium

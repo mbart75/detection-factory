@@ -14,9 +14,9 @@ tests:
     min_hits: 1
     kusto_pipeline: microsoft_xdr
   - rule: rules/persistence/win_susp_scheduled_task_creation.yml
-    sample: "Execution/temp_scheduled_task_4698_4699.evtx"
+    sample: "AutomatedTestingTools/Malware/rundll32_cmd_schtask.evtx"
     min_hits: 1
-    kusto_pipeline: azure_monitor
+    kusto_pipeline: microsoft_xdr
   - rule: rules/persistence/win_run_key_persistence.yml
     sample: "Persistence/evasion_persis_hidden_run_keyvalue_sysmon_13.evtx"
     min_hits: 1

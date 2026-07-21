@@ -1,0 +1,65 @@
+{
+  "name": "detection-factory coverage",
+  "versions": {
+    "attack": "16",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Techniques covered by at least one CI-validated Sigma rule",
+  "techniques": [
+    {
+      "techniqueID": "T1003.001",
+      "score": 1,
+      "comment": "LSASS Memory Dump Via Comsvcs.dll MiniDump"
+    },
+    {
+      "techniqueID": "T1047",
+      "score": 1,
+      "comment": "Shell Spawned By WmiPrvSE (WMI Remote Execution)"
+    },
+    {
+      "techniqueID": "T1053.005",
+      "score": 1,
+      "comment": "Scheduled Task Created Via Schtasks With Suspicious Payload"
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 1,
+      "comment": "PowerShell Engine Loaded By Unusual Host Process"
+    },
+    {
+      "techniqueID": "T1070.001",
+      "score": 1,
+      "comment": "Security Event Log Cleared"
+    },
+    {
+      "techniqueID": "T1090",
+      "score": 1,
+      "comment": "Netsh Port Proxy Persistence In Registry"
+    },
+    {
+      "techniqueID": "T1218.011",
+      "score": 1,
+      "comment": "Rundll32 Proxy Execution Via Known Abusable Exports"
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 1,
+      "comment": "Registry Run Key Modification"
+    },
+    {
+      "techniqueID": "T1548.002",
+      "score": 1,
+      "comment": "UAC Bypass Via Eventvwr Mscfile Registry Hijack"
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ffe766",
+      "#8ec843"
+    ],
+    "minValue": 0,
+    "maxValue": 2
+  }
+}

@@ -1,0 +1,10 @@
+# Windows Security-channel events (4698 scheduled task, 1102 log cleared) land in
+# the Sentinel SecurityEvent table (AMA agent). The azure_monitor pipeline can't
+# infer this table from the logsource alone, so we set it explicitly.
+name: Sentinel SecurityEvent table
+priority: 5
+transformations:
+  - id: set_securityevent_table
+    type: set_state
+    key: query_table
+    val: SecurityEvent
