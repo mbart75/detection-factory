@@ -1,0 +1,7 @@
+# pySigma 1.4.0 bundles a preview ATT&CK taxonomy (renames Defense Evasion to
+# "stealth", drops sub-techniques such as T1070.001). We keep published-ATT&CK
+# tags and disable only this one semantic validator; structure/schema validation
+# stays on. ATT&CK technique-ID format is enforced in scripts/build_layer.py.
+validators:
+  - all
+  - -attacktag

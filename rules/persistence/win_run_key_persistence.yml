@@ -1,0 +1,21 @@
+title: Registry Run Key Modification
+id: 34c064cf-f8fb-4e37-93ff-1c9479d5cdfa
+status: experimental
+description: Detects values written under the CurrentVersion Run/RunOnce registry keys (Sysmon 13), the most common Windows autostart persistence location.
+references:
+    - https://attack.mitre.org/techniques/T1547/001/
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.persistence
+    - attack.t1547.001
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\Software\Microsoft\Windows\CurrentVersion\Run'
+    condition: selection
+falsepositives:
+    - Software installations legitimately register autostart entries - noisy without environment tuning, kept broad on purpose for the v1 tuning write-up
+level: medium

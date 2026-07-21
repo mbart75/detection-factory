@@ -1,0 +1,27 @@
+title: Shell Spawned By WmiPrvSE (WMI Remote Execution)
+id: 79e0abca-9343-4139-b86e-499dae42fb95
+status: experimental
+description: Detects cmd or PowerShell spawned as a child of WmiPrvSE.exe, the execution pattern of remote WMI command execution tools such as impacket wmiexec.
+references:
+    - https://attack.mitre.org/techniques/T1047/
+    - https://github.com/fortra/impacket
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.execution
+    - attack.lateral_movement
+    - attack.t1047
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith: '\WmiPrvSE.exe'
+        Image|endswith:
+            - '\cmd.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    condition: selection
+falsepositives:
+    - Some management tooling (SCCM compliance scripts) launches shells via WMI - baseline per environment
+level: medium

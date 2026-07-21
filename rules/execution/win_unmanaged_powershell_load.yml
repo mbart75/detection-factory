@@ -1,0 +1,30 @@
+title: PowerShell Engine Loaded By Unusual Host Process
+id: 711b18c1-672d-4b02-8d2a-92d0ba710055
+status: experimental
+description: Detects the .NET PowerShell engine (System.Management.Automation) being loaded by a process that is not a known PowerShell host, a hallmark of unmanaged PowerShell injection (PSInject, Cobalt Strike powerpick).
+references:
+    - https://attack.mitre.org/techniques/T1059/001/
+    - https://github.com/EmpireProject/PSInject
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection:
+        ImageLoaded|endswith:
+            - '\System.Management.Automation.dll'
+            - '\System.Management.Automation.ni.dll'
+    filter_legit_hosts:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\powershell_ise.exe'
+            - '\pwsh.exe'
+            - '\wsmprovhost.exe'
+    condition: selection and not filter_legit_hosts
+falsepositives:
+    - Legitimate third-party PowerShell hosts (SCCM, some admin tools) - tune the filter per environment
+level: high

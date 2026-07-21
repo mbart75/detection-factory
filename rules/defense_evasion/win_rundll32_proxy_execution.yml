@@ -1,0 +1,34 @@
+title: Rundll32 Proxy Execution Via Known Abusable Exports
+id: 492fc9a2-e7ee-4aec-a292-86de6a0c526a
+status: experimental
+description: Detects rundll32.exe invoking DLL exports commonly abused for signed-binary proxy execution (zipfldr RouteTheCall, pcwutl LaunchApplication, advpack RegisterOCX).
+references:
+    - https://attack.mitre.org/techniques/T1218/011/
+    - https://lolbas-project.github.io/lolbas/Binaries/Rundll32/
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.defense_evasion
+    - attack.t1218.011
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    img:
+        Image|endswith: '\rundll32.exe'
+    payload_zipfldr:
+        CommandLine|contains|all:
+            - 'zipfldr'
+            - 'RouteTheCall'
+    payload_pcwutl:
+        CommandLine|contains|all:
+            - 'pcwutl'
+            - 'LaunchApplication'
+    payload_advpack:
+        CommandLine|contains|all:
+            - 'advpack'
+            - 'RegisterOCX'
+    condition: img and 1 of payload_*
+falsepositives:
+    - Unknown - these exports have no routine business use
+level: high

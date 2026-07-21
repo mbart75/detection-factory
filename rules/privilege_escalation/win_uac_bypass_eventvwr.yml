@@ -1,0 +1,23 @@
+title: UAC Bypass Via Eventvwr Mscfile Registry Hijack
+id: 6385e6dc-9346-4157-8fe1-2a1e7b0aa848
+status: experimental
+description: Detects the mscfile shell open command registry hijack used to elevate via eventvwr.exe, which auto-elevates and executes the attacker-controlled handler without a UAC prompt.
+references:
+    - https://attack.mitre.org/techniques/T1548/002/
+    - https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.privilege_escalation
+    - attack.defense_evasion
+    - attack.t1548.002
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\mscfile\shell\open\command'
+    condition: selection
+falsepositives:
+    - Unknown - legitimate writes to this key are not expected
+level: high

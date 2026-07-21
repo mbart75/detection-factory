@@ -1,0 +1,22 @@
+title: Netsh Port Proxy Persistence In Registry
+id: bf3c5927-2534-4fcb-964e-65b77728ac6b
+status: experimental
+description: Detects creation of netsh portproxy forwarding entries (persisted under Services PortProxy v4tov4), used to tunnel or pivot traffic such as RDP through a compromised host.
+references:
+    - https://attack.mitre.org/techniques/T1090/
+    - https://adepts.of0x.cc/netsh-portproxy-code/
+author: Maxence Barthelemy
+date: 2026-07-21
+tags:
+    - attack.command_and_control
+    - attack.t1090
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\Services\PortProxy\v4tov4'
+    condition: selection
+falsepositives:
+    - Administrators legitimately configuring port forwarding - rare and should be change-controlled
+level: high
