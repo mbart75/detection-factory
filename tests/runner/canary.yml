@@ -1,0 +1,14 @@
+title: CANARY - Any Process Creation
+id: 00000000-0000-4000-8000-000000000001
+status: test
+description: Harness smoke-test rule. Matches every Sysmon process-creation event. Not a detection.
+author: Maxence Barthelemy
+date: 2026-07-21
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        EventID: 1
+    condition: selection
+level: informational
