@@ -6,3 +6,6 @@ __pycache__/
 .venv/
 .DS_Store
 zircolite.log
+CLAUDE.md
+blueprint_senior_to_lead_FR.md
+docs/superpowers/
