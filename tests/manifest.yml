@@ -1,0 +1,43 @@
+# Chaque règle est prouvée contre un EVTX de référence, pinné à un commit précis.
+# v1 : logs communautaires (sbousseaden). v2 : logs regénérés via Atomic Red Team en home lab.
+upstream:
+  repo: sbousseaden/EVTX-ATTACK-SAMPLES
+  commit: 4ceed2f4706daf601c212a8f91c113dd85349a2c
+
+tests:
+  - rule: rules/credential_access/win_lsass_memdump_comsvcs.yml
+    sample: "Credential Access/sysmon_10_1_memdump_comsvcs_minidump.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/execution/win_unmanaged_powershell_load.yml
+    sample: "Defense Evasion/de_unmanagedpowershell_psinject_sysmon_7_8_10.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/persistence/win_susp_scheduled_task_creation.yml
+    sample: "Execution/temp_scheduled_task_4698_4699.evtx"
+    min_hits: 1
+    kusto_pipeline: azure_monitor
+  - rule: rules/persistence/win_run_key_persistence.yml
+    sample: "Persistence/evasion_persis_hidden_run_keyvalue_sysmon_13.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/privilege_escalation/win_uac_bypass_eventvwr.yml
+    sample: "Privilege Escalation/Sysmon_13_1_UAC_Bypass_EventVwrBypass.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/defense_evasion/win_rundll32_proxy_execution.yml
+    sample: "Execution/exec_sysmon_1_11_lolbin_rundll32_zipfldr_RouteTheCall.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/command_and_control/win_netsh_portproxy.yml
+    sample: "Defense Evasion/de_portforward_netsh_rdp_sysmon_13_1.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
+  - rule: rules/defense_evasion/win_security_log_cleared.yml
+    sample: "Defense Evasion/DE_1102_security_log_cleared.evtx"
+    min_hits: 1
+    kusto_pipeline: azure_monitor
+  - rule: rules/execution/win_wmiexec_shell_spawn.yml
+    sample: "Lateral Movement/LM_wmiexec_impacket_sysmon_whoami.evtx"
+    min_hits: 1
+    kusto_pipeline: microsoft_xdr
