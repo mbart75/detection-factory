@@ -23,8 +23,12 @@ la tactique *Defense Evasion* en `stealth` et ne contient pas certaines
 sous-techniques comme T1070.001. Plutôt que d'encoder cette taxonomie preview
 dans des règles publiques, on garde les tags conformes à l'ATT&CK publié (ceux
 qu'un reviewer SigmaHQ reconnaît) et on désactive ce contrôle sémantique
-défaillant. La validation de schéma/structure reste active ; le format des IDs
-de technique est vérifié dans `scripts/build_layer.py`.
+défaillant. La validation de schéma/structure reste active.
+
+**Contrôle compensatoire** : `scripts/build_layer.py` fait échouer la CI si une
+règle porte un tag `attack.*` malformé ou n'a aucune technique valide. Désactiver
+un validateur sans le remplacer aurait laissé passer des règles non mappées —
+exactement ce que le cahier des charges interdit.
 
 ## 4. Matrice de pipelines KQL par règle
 `microsoft_xdr` (tables Device*) pour les catégories Sysmon, `azure_monitor`

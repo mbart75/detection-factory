@@ -18,13 +18,19 @@ detection:
         ImageLoaded|endswith:
             - '\System.Management.Automation.dll'
             - '\System.Management.Automation.ni.dll'
+    # Anchored to full system paths on purpose: an implant dropped as
+    # C:\Users\Public\powershell.exe is exactly what this rule must catch,
+    # and an |endswith filter would whitelist it.
     filter_legit_hosts:
         Image|endswith:
-            - '\powershell.exe'
-            - '\powershell_ise.exe'
-            - '\pwsh.exe'
-            - '\wsmprovhost.exe'
-    condition: selection and not filter_legit_hosts
+            - '\System32\WindowsPowerShell\v1.0\powershell.exe'
+            - '\SysWOW64\WindowsPowerShell\v1.0\powershell.exe'
+            - '\System32\WindowsPowerShell\v1.0\powershell_ise.exe'
+            - '\System32\wsmprovhost.exe'
+        Image|startswith: 'C:\Windows\'
+    filter_pwsh:
+        Image|endswith: '\pwsh.exe'
+    condition: selection and not 1 of filter_*
 falsepositives:
-    - Legitimate third-party PowerShell hosts (SCCM, some admin tools) - tune the filter per environment
-level: high
+    - High volume expected without per-environment tuning. Known legitimate .NET hosts of the PowerShell engine include mmc.exe (Exchange/AD snap-ins), ServerManager.exe, Windows Admin Center, sdiagnhost.exe, w3wp.exe, dotnet.exe, SCCM/Intune agents, and monitoring agents. Baseline these before promoting the severity.
+level: medium

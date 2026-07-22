@@ -34,7 +34,7 @@
       "comment": "Security Event Log Cleared"
     },
     {
-      "techniqueID": "T1090",
+      "techniqueID": "T1090.001",
       "score": 1,
       "comment": "Netsh Port Proxy Persistence In Registry"
     },
@@ -60,6 +60,6 @@
       "#8ec843"
     ],
     "minValue": 0,
-    "maxValue": 2
+    "maxValue": 1
   }
 }

@@ -27,6 +27,7 @@ def main() -> int:
     failures = 0
     for entry in manifest["tests"]:
         rule = ROOT / entry["rule"]
+        pipeline = entry["kusto_pipeline"]
         out = DIST / (rule.stem + ".kql")
         proc = subprocess.run(  # nosec B603: fixed argv, no shell, trusted inputs
             [str(SIGMA), "convert", "-t", "kusto", *pipelines_for(entry), str(rule)],
@@ -34,6 +35,10 @@ def main() -> int:
         )
         if proc.returncode != 0:
             print(f"[FAIL] {rule.name} ({pipeline}):\n{proc.stderr}", file=sys.stderr)
+            failures += 1
+            continue
+        if not proc.stdout.strip():
+            print(f"[FAIL] {rule.name} ({pipeline}): empty query", file=sys.stderr)
             failures += 1
             continue
         out.write_text(proc.stdout)

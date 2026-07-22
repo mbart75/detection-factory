@@ -30,5 +30,7 @@ detection:
             - 'RegisterOCX'
     condition: img and 1 of payload_*
 falsepositives:
-    - Unknown - these exports have no routine business use
+    - pcwutl.dll LaunchApplication is invoked by the legitimate Windows Program Compatibility Assistant (pcwrun.exe / msdt.exe)
+    - advpack.dll RegisterOCX is used by legacy INF-based installers, still present in industrial estates
+    - zipfldr.dll RouteTheCall has no known routine business use
 level: high

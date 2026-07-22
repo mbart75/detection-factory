@@ -25,7 +25,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: tests/samples
-          key: evtx-samples-4ceed2f4706daf601c212a8f91c113dd85349a2c
+          # keyed on the manifest itself: bumping the pinned commit or swapping a
+          # sample invalidates the cache, so tests can never run against stale logs
+          key: evtx-samples-${{ hashFiles('tests/manifest.yml') }}
       - name: "Stage 3a - Install pinned Zircolite"
         run: bash scripts/setup_zircolite.sh
       - name: "Stage 3b - Fetch pinned EVTX samples"
@@ -40,8 +42,10 @@ jobs:
         # patched release; used only as a local build-time ATT&CK-data cache.
         run: pip-audit -r requirements.txt --ignore-vuln PYSEC-2026-2447
 
-      - name: Build ATT&CK coverage layer
-        run: python3 scripts/build_layer.py
+      - name: "Stage 5 - ATT&CK tags valid and coverage layer up to date"
+        run: |
+          python3 scripts/build_layer.py
+          git diff --exit-code docs/coverage/layer.json
 
       - name: Upload KQL artifacts
         uses: actions/upload-artifact@v4
