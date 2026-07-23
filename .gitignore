@@ -10,3 +10,10 @@ CLAUDE.md
 blueprint_senior_to_lead_FR.md
 docs/superpowers/
 NOTES-ENTRETIEN.md
+
+# ── Fichiers perso — leur place est dans le vault ─────
+# (filet de securite : ces fichiers ne devraient pas etre ici du tout)
+# Reference : mBarthos/_systeme/Regles-gitignore.md
+Transmission.md
+transmissions/
+blueprint*.md
