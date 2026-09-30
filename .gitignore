@@ -17,3 +17,6 @@ NOTES-ENTRETIEN.md
 Transmission.md
 transmissions/
 blueprint*.md
+
+# Briefing agent : contient des elements prives, jamais publie (CLAUDE.md est un lien vers lui)
+AGENTS.md
