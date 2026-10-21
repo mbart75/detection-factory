@@ -1,5 +1,7 @@
 # detection-factory
 
+[![CI](https://github.com/mbart75/detection-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/mbart75/detection-factory/actions/workflows/ci.yml) [![release](https://img.shields.io/github/v/release/mbart75/detection-factory)](https://github.com/mbart75/detection-factory/releases/latest) [![ATT&CK v20](https://img.shields.io/badge/ATT%26CK-v20-red)](https://attack.mitre.org/) [![licence: MIT + DRL 1.1](https://img.shields.io/badge/licence-MIT%20%2B%20DRL%201.1-blue)](LICENSE)
+
 Detection-as-Code pipeline: Sigma rules, validated in CI against real attack logs,
 converted to Microsoft Sentinel KQL, mapped to MITRE ATT&CK.
 
@@ -79,3 +81,10 @@ docs/           coverage layer, design decisions
 ## Design decisions and trade-offs
 
 See [docs/decisions.md](docs/decisions.md).
+
+## License
+
+Code is under the [MIT License](LICENSE). The Sigma rules in `rules/` are under the
+[Detection Rule License 1.1](rules/LICENSE.Detection.Rules.md), the licence used by
+SigmaHQ: reuse them freely, but keep the author and the licence when you share
+them or report their matches. Security issues: see [SECURITY.md](SECURITY.md).
