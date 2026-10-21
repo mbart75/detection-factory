@@ -38,6 +38,11 @@ def run_zircolite(rule: Path, sample: Path) -> list:
         return json.loads(outfile.read_text())
 
 
+def samples_dir(manifest: dict) -> Path:
+    """Samples are stored per pinned commit (see fetch_samples.py)."""
+    return SAMPLES_DIR / manifest["upstream"]["commit"]
+
+
 def count_hits(detections: list, title: str) -> int:
     total = 0
     for d in detections:
@@ -55,7 +60,7 @@ def canary_self_test(manifest: dict) -> str:
     on a Sysmon sample.
     """
     canary = Path(__file__).parent / "canary.yml"
-    sample = SAMPLES_DIR / Path(manifest["tests"][0]["sample"]).name
+    sample = samples_dir(manifest) / Path(manifest["tests"][0]["sample"]).name
     if not canary.exists() or not sample.exists():
         return f"canary self-test cannot run (missing {canary.name} or sample)"
     title = yaml.safe_load(canary.read_text())["title"]
@@ -100,7 +105,7 @@ def main() -> int:
         # match on the manifest-relative path, never the absolute checkout path
         if args.only and args.only not in entry["rule"]:
             continue
-        sample = SAMPLES_DIR / Path(entry["sample"]).name
+        sample = samples_dir(manifest) / Path(entry["sample"]).name
         if not rule.exists():
             print(f"[FAIL] missing rule file: {entry['rule']}", file=sys.stderr)
             return 1

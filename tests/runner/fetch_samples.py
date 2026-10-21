@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Download pinned EVTX reference samples listed in tests/manifest.yml."""
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -16,11 +17,18 @@ RAW_BASE = "https://raw.githubusercontent.com/{repo}/{commit}/{path}"
 def main() -> int:
     manifest = yaml.safe_load(MANIFEST.read_text())
     upstream = manifest["upstream"]
-    SAMPLES_DIR.mkdir(parents=True, exist_ok=True)
+    # a full commit SHA, never a branch or tag; also safe as a directory name
+    if not re.fullmatch(r"[0-9a-f]{40}", str(upstream["commit"])):
+        print(f"[error] upstream.commit must be a full commit SHA: {upstream['commit']}",
+              file=sys.stderr)
+        return 1
+    # one directory per pinned commit: bumping the commit can never reuse old files
+    samples_dir = SAMPLES_DIR / upstream["commit"]
+    samples_dir.mkdir(parents=True, exist_ok=True)
     failures = 0
     for entry in manifest["tests"]:
         sample = entry["sample"]
-        dest = SAMPLES_DIR / Path(sample).name
+        dest = samples_dir / Path(sample).name
         if dest.exists() and dest.stat().st_size > 0:
             print(f"[cache] {dest.name}")
             continue
