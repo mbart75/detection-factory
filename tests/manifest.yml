@@ -1,5 +1,5 @@
-# Chaque règle est prouvée contre un EVTX de référence, pinné à un commit précis.
-# v1 : logs communautaires (sbousseaden). v2 : logs regénérés via Atomic Red Team en home lab.
+# Each rule is proven against a reference EVTX, pinned to an exact commit.
+# v1: community logs (sbousseaden). v2: logs regenerated with Atomic Red Team in a home lab.
 upstream:
   repo: sbousseaden/EVTX-ATTACK-SAMPLES
   commit: 4ceed2f4706daf601c212a8f91c113dd85349a2c

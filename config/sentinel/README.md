@@ -1,13 +1,13 @@
-# Backend Sentinel (KQL)
+# Sentinel backend (KQL)
 
-Cible v1 : Microsoft Sentinel.
-- Règles `process_creation` / `registry_set` / `image_load` → pipeline pySigma `microsoft_xdr`
-  (tables DeviceProcessEvents / DeviceRegistryEvents / DeviceImageLoadEvents, disponibles
-  dans Sentinel via le connecteur Defender XDR).
-- Règles sur événements Security natifs (1102) → pipeline `azure_monitor` (table SecurityEvent,
-  agent AMA). Le pipeline ne peut pas déduire la table SecurityEvent depuis la seule logsource,
-  donc `security_event_table.yml` la fixe explicitement **avant** azure_monitor (priorité 5).
+v1 target: Microsoft Sentinel.
+- `process_creation` / `registry_set` / `image_load` rules → pySigma pipeline `microsoft_xdr`
+  (DeviceProcessEvents / DeviceRegistryEvents / DeviceImageLoadEvents tables, available
+  in Sentinel through the Defender XDR connector).
+- Rules on native Security events (1102) → pipeline `azure_monitor` (SecurityEvent table,
+  AMA agent). The pipeline cannot infer the SecurityEvent table from the logsource alone,
+  so `security_event_table.yml` sets it explicitly, **before** azure_monitor (priority 5).
 
-Le mapping par règle est déclaré dans `tests/manifest.yml` (champ `kusto_pipeline`)
-et exécuté par `scripts/convert_rules.py`. Sorties générées dans `dist/kql/`
-(non commitées : artefact de build, publié par la CI).
+The pipeline for each rule is declared in `tests/manifest.yml` (`kusto_pipeline` field)
+and applied by `scripts/convert_rules.py`. Output goes to `dist/kql/`
+(not committed: a build artifact, published by CI).

@@ -1,6 +1,6 @@
 # Direct dependencies. Do not install from this file: install the lock file
 # (requirements.txt), which pins every transitive dependency with its hashes.
-# Regenerate the lock after editing this file (see docs/decisions.md, decision 8):
+# Regenerate the lock after editing this file (see docs/decisions.md, decision 9):
 #   uv pip compile requirements.in --universal --python-version 3.12 \
 #     --generate-hashes -o requirements.txt
 
