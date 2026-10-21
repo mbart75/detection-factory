@@ -6,6 +6,7 @@ references:
     - https://attack.mitre.org/techniques/T1047/
     - https://github.com/fortra/impacket
 author: Maxence Barthelemy
+license: DRL-1.1
 date: 2026-07-21
 modified: 2026-10-21
 tags:

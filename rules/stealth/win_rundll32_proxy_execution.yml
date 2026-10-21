@@ -6,6 +6,7 @@ references:
     - https://attack.mitre.org/techniques/T1218/011/
     - https://lolbas-project.github.io/lolbas/Binaries/Rundll32/
 author: Maxence Barthelemy
+license: DRL-1.1
 date: 2026-07-21
 modified: 2026-10-21
 tags:
