@@ -4,16 +4,25 @@ on:
     branches: [main]
   pull_request:
 
+# The job only reads the repository and uploads a build artifact.
+permissions:
+  contents: read
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    # pinned runner image: a new "latest" must not change results silently
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      # third-party actions are pinned to a full commit SHA, not a movable tag
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - name: Install pinned tooling
-        run: pip install -r requirements.txt
+      - name: Install locked tooling (every dependency pinned with its hash)
+        run: pip install --require-hashes -r requirements.txt
 
       - name: "Stage 1 - Sigma schema and lint"
         run: sigma check -i -c config/sigma_validation.yml rules/
@@ -22,7 +31,7 @@ jobs:
         run: python3 scripts/convert_rules.py
 
       - name: Cache EVTX samples
-        uses: actions/cache@v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: tests/samples
           # keyed on the manifest itself: bumping the pinned commit or swapping a
@@ -38,9 +47,9 @@ jobs:
       - name: "Stage 4a - Bandit (SAST on tooling)"
         run: bandit -q -r scripts/ tests/runner/ -c .bandit
       - name: "Stage 4b - pip-audit (dependency vulnerabilities)"
-        # PYSEC-2026-2447: diskcache is a transitive dep of pinned pySigma with no
-        # patched release; used only as a local build-time ATT&CK-data cache.
-        run: pip-audit -r requirements.txt --ignore-vuln PYSEC-2026-2447
+        # PYSEC-2026-2447: diskcache is a transitive dep of pySigma with no
+        # patched release; see docs/decisions.md, decision 7 (next review 2027-01).
+        run: pip-audit -r requirements.txt --require-hashes --disable-pip --ignore-vuln PYSEC-2026-2447
 
       - name: "Stage 5 - ATT&CK tags valid and coverage layer up to date"
         run: |
@@ -48,7 +57,7 @@ jobs:
           git diff --exit-code docs/coverage/layer.json
 
       - name: Upload KQL artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sentinel-kql
           path: dist/kql/
