@@ -1,12 +1,12 @@
 {
   "name": "detection-factory coverage",
   "versions": {
-    "attack": "16",
-    "navigator": "5.1.0",
+    "attack": "20",
+    "navigator": "5.3.2",
     "layer": "4.5"
   },
   "domain": "enterprise-attack",
-  "description": "Techniques covered by at least one CI-validated Sigma rule",
+  "description": "Techniques covered by at least one CI-validated Sigma rule (ATT&CK v20.0)",
   "techniques": [
     {
       "techniqueID": "T1003.001",
@@ -29,11 +29,6 @@
       "comment": "PowerShell Engine Loaded By Unusual Host Process"
     },
     {
-      "techniqueID": "T1070.001",
-      "score": 1,
-      "comment": "Security Event Log Cleared"
-    },
-    {
       "techniqueID": "T1090.001",
       "score": 1,
       "comment": "Netsh Port Proxy Persistence In Registry"
@@ -52,6 +47,11 @@
       "techniqueID": "T1548.002",
       "score": 1,
       "comment": "UAC Bypass Via Eventvwr Mscfile Registry Hijack"
+    },
+    {
+      "techniqueID": "T1685.005",
+      "score": 1,
+      "comment": "Security Event Log Cleared"
     }
   ],
   "gradient": {

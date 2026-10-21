@@ -7,9 +7,9 @@ references:
     - https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/
 author: Maxence Barthelemy
 date: 2026-07-21
+modified: 2026-10-21
 tags:
-    - attack.privilege_escalation
-    - attack.defense_evasion
+    - attack.privilege-escalation
     - attack.t1548.002
 logsource:
     category: registry_set

@@ -7,9 +7,9 @@ references:
     - https://github.com/fortra/impacket
 author: Maxence Barthelemy
 date: 2026-07-21
+modified: 2026-10-21
 tags:
     - attack.execution
-    - attack.lateral_movement
     - attack.t1047
 logsource:
     category: process_creation

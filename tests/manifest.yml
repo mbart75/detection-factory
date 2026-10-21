@@ -25,7 +25,7 @@ tests:
     sample: "Privilege Escalation/Sysmon_13_1_UAC_Bypass_EventVwrBypass.evtx"
     min_hits: 1
     kusto_pipeline: microsoft_xdr
-  - rule: rules/defense_evasion/win_rundll32_proxy_execution.yml
+  - rule: rules/stealth/win_rundll32_proxy_execution.yml
     sample: "Execution/exec_sysmon_1_11_lolbin_rundll32_zipfldr_RouteTheCall.evtx"
     min_hits: 1
     kusto_pipeline: microsoft_xdr
@@ -33,7 +33,7 @@ tests:
     sample: "Defense Evasion/de_portforward_netsh_rdp_sysmon_13_1.evtx"
     min_hits: 1
     kusto_pipeline: microsoft_xdr
-  - rule: rules/defense_evasion/win_security_log_cleared.yml
+  - rule: rules/defense_impairment/win_security_log_cleared.yml
     sample: "Defense Evasion/DE_1102_security_log_cleared.evtx"
     min_hits: 1
     kusto_pipeline: azure_monitor
