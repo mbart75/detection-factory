@@ -13,5 +13,6 @@ __pycache__/
 
 # Agent tooling and OS files
 .claude/
+.codex/
 graphify-out/
 .DS_Store
