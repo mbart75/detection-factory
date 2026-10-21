@@ -1,22 +1,17 @@
+# Build and test artifacts
+dist/
 tests/samples/
 tools/
-dist/
+zircolite.log
 __pycache__/
 *.pyc
 .venv/
+
+# Secrets: never committed
+.env
+.env.*
+
+# Agent tooling and OS files
+.claude/
+graphify-out/
 .DS_Store
-zircolite.log
-CLAUDE.md
-blueprint_senior_to_lead_FR.md
-docs/superpowers/
-NOTES-ENTRETIEN.md
-
-# ── Fichiers perso — leur place est dans le vault ─────
-# (filet de securite : ces fichiers ne devraient pas etre ici du tout)
-# Reference : mBarthos/_systeme/Regles-gitignore.md
-Transmission.md
-transmissions/
-blueprint*.md
-
-# Briefing agent : contient des elements prives, jamais publie (CLAUDE.md est un lien vers lui)
-AGENTS.md
