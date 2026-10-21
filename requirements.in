@@ -1,0 +1,31 @@
+# Direct dependencies. Do not install from this file: install the lock file
+# (requirements.txt), which pins every transitive dependency with its hashes.
+# Regenerate the lock after editing this file (see docs/decisions.md, decision 8):
+#   uv pip compile requirements.in --universal --python-version 3.12 \
+#     --generate-hashes -o requirements.txt
+
+# Pipeline tooling
+sigma-cli==3.1.0
+pySigma-backend-kusto==1.0.1
+PyYAML==6.0.3
+bandit==1.9.4
+pip-audit==2.10.1
+
+# Zircolite v3.7.6 runtime (copied from its requirements.txt at the pinned commit,
+# so its dependencies are locked here instead of being resolved at install time)
+orjson>=3.9.15
+xxhash>=3.0
+rich>=14.2.0
+chardet>=5.0,<6
+RestrictedPython>=7.4
+requests>=2.32.4
+jinja2>=2.11.3
+evtx>=0.6.2
+lxml>=4.9
+pysigma>=0.10.10
+pysigma-pipeline-sysmon>=1.0.3
+pysigma-pipeline-windows>=1.1.1
+pysigma-backend-sqlite>=0.1.1
+psutil>=5.9.0
+urllib3>=2.6.3
+py7zr>=0.20.0
