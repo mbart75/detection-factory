@@ -13,6 +13,31 @@ tests:
     sample: "Defense Evasion/de_unmanagedpowershell_psinject_sysmon_7_8_10.evtx"
     min_hits: 1
     kusto_pipeline: microsoft_xdr
+    # The same attack replayed with the host process renamed (decision 11):
+    # an implant named after a PowerShell host must still fire, the genuine
+    # installed hosts must not.
+    variants:
+      - name: implant named pwsh.exe in a user-writable folder
+        set: {Image: 'C:\Users\Public\pwsh.exe'}
+        min_hits: 1
+      - name: implant in a fake PowerShell 7 folder outside Program Files
+        set: {Image: 'C:\Users\Public\PowerShell\7\pwsh.exe'}
+        min_hits: 1
+      - name: implant named powershell.exe in a user-writable folder
+        set: {Image: 'C:\Users\Public\powershell.exe'}
+        min_hits: 1
+      - name: PowerShell 7, MSI install (x64)
+        set: {Image: 'C:\Program Files\PowerShell\7\pwsh.exe'}
+        max_hits: 0
+      - name: PowerShell 7, MSI install (x86)
+        set: {Image: 'C:\Program Files (x86)\PowerShell\7\pwsh.exe'}
+        max_hits: 0
+      - name: PowerShell 7 preview, MSI install
+        set: {Image: 'C:\Program Files\PowerShell\7-preview\pwsh.exe'}
+        max_hits: 0
+      - name: PowerShell 7, Microsoft Store (MSIX) install
+        set: {Image: 'C:\Program Files\WindowsApps\Microsoft.PowerShell_7.4.6.0_x64__8wekyb3d8bbwe\pwsh.exe'}
+        max_hits: 0
   - rule: rules/persistence/win_susp_scheduled_task_creation.yml
     sample: "AutomatedTestingTools/Malware/rundll32_cmd_schtask.evtx"
     min_hits: 1
