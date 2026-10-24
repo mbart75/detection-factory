@@ -108,3 +108,34 @@ job to pass before the merge. Nothing is deployed automatically: the KQL is
 published as a build artifact. Pushing detection rules straight into a
 production SIEM on every merge would turn a bad rule into an alert storm (or
 a silent gap) across the whole estate; deployment stays a reviewed, human step.
+
+## 11. Evasion variants: the pinned attack replayed with one field rewritten
+A rule that fires on its reference sample can still be blind to the same
+attack with a renamed binary, and the rules are public, so an attacker can
+read every filter. Until October 2026 the unmanaged PowerShell rule excluded
+any process whose image ended in `\pwsh.exe`: an implant saved as
+`C:\Users\Public\pwsh.exe` loaded the PowerShell engine without an alert,
+and no test could show it, because the harness only checked that the rule
+fired on the sample as recorded.
+
+A manifest entry can now list `variants`. Each one rewrites event fields of
+the pinned sample at test time (the real PSInject log, with `Image` set to
+another path) and declares `min_hits` (must fire) or `max_hits` (must stay
+silent). The runner reads the EVTX with the `evtx` library already locked
+for Zircolite, writes a JSON-lines copy to a temporary directory and runs
+Zircolite on it with `--json-input`. A variant that rewrites no event fails
+the build, so a typo in a field name cannot pass by proving nothing.
+
+Why not hand-written events: test data stays the pinned public EVTX set
+(decision 1). A variant is that log with one value changed, built and thrown
+away during the run; nothing synthetic is committed, and every other field
+is what a real Sysmon recorded.
+
+PowerShell 7 is now allowed only at the paths its installers write to, which
+need admin rights: `C:\Program Files\PowerShell\7\` and `7-preview\`,
+`C:\Program Files (x86)\PowerShell\7\`, and the Microsoft Store package under
+`C:\Program Files\WindowsApps\`, whose folder name ends with Microsoft's
+publisher ID (`__8wekyb3d8bbwe`). Trade-off: PowerShell 7 run from a ZIP
+extract or as a dotnet global tool in the user profile now fires. Those
+paths are user-writable, so an implant could sit there too; they belong in a
+per-environment allow-list, never in the public rule.
