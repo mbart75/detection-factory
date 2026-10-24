@@ -79,6 +79,14 @@ download nor a scan.
   on a single-tenant, ephemeral CI runner. Ignored by name
   (`--ignore-vuln`); any other vulnerability fails CI. Next review: January
   2027, or as soon as a fixed release exists.
+- pip-audit PYSEC-2026-4322 / GHSA-9v8h-qqgm-4m35 (brotli 1.2.0, out-of-bounds
+  write in the decoder, October 2026): removed, not ignored. brotli came only
+  from py7zr, which Zircolite imports solely to open `.7z` archives; the
+  pipeline feeds it EVTX and JSON lines, never archives. py7zr is no longer
+  installed, which drops brotli and ten other packages that decompress
+  archives. The fixed brotli 1.2.1 was under a week old, too new to adopt.
+  If a `.7z` input is ever needed, Zircolite raises a clear ImportError
+  rather than failing silently.
 
 ## 8. v1 rule swaps forced by the samples
 Some rules from the initial inventory were replaced for lack of a reference
