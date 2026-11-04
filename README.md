@@ -10,9 +10,10 @@ converted to Microsoft Sentinel KQL, mapped to MITRE ATT&CK.
 Anyone can write a detection rule. The hard question is: **how do you know it fires?**
 This repo answers it with engineering discipline: every rule is (1) schema-validated,
 (2) converted to the target backend, (3) replayed against a real EVTX attack sample
-and required to trigger, (4) security-scanned, and (5) checked against a pinned
-ATT&CK release before it reaches the coverage map. All of it runs in CI on every
-pull request, and `main` only accepts a change once CI passes.
+and required to trigger, and (4) checked against a pinned ATT&CK release before it
+reaches the coverage map. The pipeline's own Python tooling is scanned with Bandit,
+and its pinned dependencies with pip-audit. All of it runs in CI on every pull
+request, and `main` only accepts a change once CI passes.
 
 ## Architecture
 
@@ -71,7 +72,8 @@ python3 scripts/build_layer.py         # ATT&CK tag checks + Navigator layer
 
 ```
 rules/          Sigma rules, one directory per ATT&CK tactic
-config/         validation config, pinned ATT&CK extract, Sentinel field-mapping pipelines
+config/         validation config, pinned ATT&CK extract, Sentinel SecurityEvent table setting
+                (field mapping comes from pySigma's built-in pipelines)
 tests/          manifest (rule -> sample -> expected hits) + Zircolite runner
 scripts/        KQL conversion, ATT&CK layer generation, ATT&CK extract update
 docs/           coverage layer, design decisions
