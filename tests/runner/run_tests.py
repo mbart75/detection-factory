@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 import yaml
+from evtx import PyEvtxParser
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "tests" / "manifest.yml"
@@ -18,7 +19,7 @@ SAMPLES_DIR = ROOT / "tests" / "samples"
 PIPELINES = ["sysmon", "windows-logsources"]
 
 
-def run_zircolite(rule: Path, sample: Path) -> list:
+def run_zircolite(rule: Path, sample: Path, json_input: bool = False) -> list:
     with tempfile.TemporaryDirectory() as tmp:
         outfile = Path(tmp) / "detected.json"
         cmd = [
@@ -28,6 +29,8 @@ def run_zircolite(rule: Path, sample: Path) -> list:
             "--pipeline", *PIPELINES,
             "--outfile", str(outfile),
         ]
+        if json_input:
+            cmd.append("--json-input")
         proc = subprocess.run(  # nosec B603: fixed argv, no shell, trusted inputs
             cmd, capture_output=True, text=True, cwd=ZIRCOLITE.parent
         )
@@ -49,6 +52,47 @@ def count_hits(detections: list, title: str) -> int:
         if d.get("title") == title:
             total += d.get("count") or len(d.get("matches", []))
     return total
+
+
+def write_variant(sample: Path, overrides: dict, dest: Path) -> int:
+    """Rewrite fields of the pinned sample's events into a JSON-lines copy.
+
+    Returns how many events were rewritten. Nothing synthetic is committed: a
+    variant is the real attack log with one value changed, built at test time.
+    """
+    rewritten = 0
+    with dest.open("w") as out:
+        for record in PyEvtxParser(str(sample)).records_json():
+            event = json.loads(record["data"])
+            data = event["Event"].get("EventData") or {}
+            if overrides.keys() <= data.keys():
+                data.update(overrides)
+                rewritten += 1
+            out.write(json.dumps(event) + "\n")
+    return rewritten
+
+
+def run_variants(rule: Path, sample: Path, title: str, variants: list) -> list:
+    """Replay the sample with fields rewritten; each variant must fire or stay silent."""
+    results = []
+    for variant in variants:
+        bounds = {k: variant[k] for k in ("min_hits", "max_hits") if k in variant}
+        if len(bounds) != 1:
+            raise ValueError(f"variant '{variant['name']}' needs exactly one "
+                             f"of min_hits or max_hits")
+        with tempfile.TemporaryDirectory() as tmp:
+            events = Path(tmp) / "variant.jsonl"
+            # a variant that rewrites nothing would pass while proving nothing
+            if write_variant(sample, variant["set"], events) == 0:
+                raise ValueError(f"variant '{variant['name']}' matches no event "
+                                 f"field in {sample.name}")
+            hits = count_hits(run_zircolite(rule, events, json_input=True), title)
+        if "min_hits" in bounds:
+            ok, want = hits >= bounds["min_hits"], f"min={bounds['min_hits']}"
+        else:
+            ok, want = hits <= bounds["max_hits"], f"max={bounds['max_hits']}"
+        results.append((f"  variant: {variant['name']}", hits, want, ok))
+    return results
 
 
 def canary_self_test(manifest: dict) -> str:
@@ -99,7 +143,7 @@ def main() -> int:
         return 1
     print("[canary] harness verified\n")
 
-    results, failed = [], False
+    results = []
     for entry in manifest["tests"]:
         rule = ROOT / entry["rule"]
         # match on the manifest-relative path, never the absolute checkout path
@@ -115,15 +159,15 @@ def main() -> int:
             return 1
         title = yaml.safe_load(rule.read_text())["title"]
         hits = count_hits(run_zircolite(rule, sample), title)
-        ok = hits >= entry["min_hits"]
-        failed |= not ok
-        results.append((rule.name, hits, entry["min_hits"], "PASS" if ok else "FAIL"))
+        results.append((rule.name, hits, f"min={entry['min_hits']}",
+                        hits >= entry["min_hits"]))
+        results += run_variants(rule, sample, title, entry.get("variants", []))
     if not results:
         print("no tests selected", file=sys.stderr)
         return 2
-    for name, hits, want, status in results:
-        print(f"{status:4} {name:50} hits={hits} (min={want})")
-    return 1 if failed else 0
+    for name, hits, want, ok in results:
+        print(f"{'PASS' if ok else 'FAIL':4} {name:68} hits={hits} ({want})")
+    return 0 if all(ok for *_, ok in results) else 1
 
 
 if __name__ == "__main__":
